@@ -7,7 +7,7 @@ const connectDb=()=>{
     .then(()=>{console.log("Connection established successfully")})
     .catch((err)=>{
         console.log("Connection failed",err)
-        process.exit(1)
+        //process.exit(1)
     })
 }
 
