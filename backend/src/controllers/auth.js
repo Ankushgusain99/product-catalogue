@@ -2,6 +2,8 @@ const User=require('../models/register')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken')
 require('dotenv').config()
+
+
 exports.registerUser=async(req,res)=>{
     try {
         const {username,password,role} = req.body
@@ -129,6 +131,7 @@ exports.updateUser=async(req,res)=>{
         const {username,password,role}=req.body
     
         const user=await User.findById({_id:id})
+
         let hashedPassword;
             const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
     
@@ -160,7 +163,7 @@ exports.updateUser=async(req,res)=>{
                 success:true,
                 message:"User updated successfully"
             })
-            console.log(user)
+            //console.log(user)
     } catch (error) {
         res.status(500).json({
             success:false,
