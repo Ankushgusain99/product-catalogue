@@ -27,7 +27,9 @@ exports.registerProduct = async (req, res,next) => {
             ingredients,
             dietary,
             storage,
+            productIdPrefix,
             origin,
+            addedBy
         } = req.body;
 
         let uploadImageUrl = '';
@@ -63,7 +65,9 @@ exports.registerProduct = async (req, res,next) => {
             ingredients,
             dietary,
             storage,
+            productIdPrefix,
             origin,
+            addedBy,
             uploadImage: uploadImageUrl
         });
 
@@ -80,126 +84,6 @@ exports.registerProduct = async (req, res,next) => {
     }
 };
 
-// Function to create a new product
-// exports.registerProduct = async (req, res) => {
-//     try {
-//         const {
-//             productName,
-//             productBrand,
-//             superCategory,
-//             category,
-//             subCategory,
-//             numberOfUnits,
-//             siUnits,
-//             unitWeight,
-//             grossWeight,
-//             productDescription,
-//             calories,
-//             fat,
-//             saturatedFat,
-//             carbs,
-//             fibre,
-//             sugar,
-//             protein,
-//             salt,
-//             ingredients,
-//             dietary,
-//             storage,
-//             origin,
-//         } = req.body;
-
-//         let uploadImageUrl = '';
-//         const uploaded=req.files.uploadImage
-//         //console.log("The request is",req)
-//        // console.log("the uploaded file is",uploaded)
-//         console.log(uploaded.tempFilePath)
-//     if (uploaded) {
-//       const uploadResult = await cloudinary.uploader.upload(uploaded.tempFilePath);
-//       uploadImageUrl = uploadResult.secure_url;
-//     }
-//        // console.log(uploadImageUrl)
-            
-//         // const files = req.files?.imageFiles; // Assuming imageFiles is an array of files
-//         /*console.log(files)
-        
-//         if (!files || files.length === 0) {
-//              return res.status(400).json({
-//                  success: false,
-//                  message: 'No files uploaded',
-//              });
-//          }*/
-
-//         // Limit the number of files to 4
-//         // if (files.length > 4) {
-//         //     return res.status(400).json({
-//         //         success: false,
-//         //         message: 'You can upload a maximum of 4 files',
-//         //     });
-//         // }
-
-//         // // Validation
-//         // const supportedTypes = ["jpg", "jpeg", "png"];
-//         // const uploadPromises = files.map(async (file) => {
-//         //     const fileType = file.name.split('.').pop().toLowerCase(); // Get the file extension
-//         //     console.log("File Type:", fileType);
-
-//         //     if (!isFileTypeSupported(fileType, supportedTypes)) {
-//         //         throw new Error('File format not supported');
-//         //     }
-
-//         //     console.log("Uploading to Infyair");
-//         //     const response = await uploadFileToCloudinary(file, "Infyair");
-//         //     console.log(response);
-
-//         //     return response.secure_url; // Collect response URL for each file
-//         // });
-
-//         // // Wait for all uploads to finish
-//         // const uploadedImageUrls = await Promise.all(uploadPromises);
-//      //uploadImage=uploadImageUrl
-//         let netWeight=unitWeight*numberOfUnits;
-
-//         // Create a new product instance
-//         const newProduct = new product({
-//             productName,
-//             productBrand,
-//             superCategory,
-//             category,
-//             subCategory,
-//             numberOfUnits,
-//             siUnits,
-//             unitWeight,
-//             netWeight,
-//             grossWeight,
-//             productDescription,
-//             calories,
-//             fat,
-//             saturatedFat,
-//             carbs,
-//             fibre,
-//             sugar,
-//             protein,
-//             salt,
-//             ingredients,
-//             dietary,
-//             storage,
-//             origin,
-//             uploadImage:uploadImageUrl
-//         });
-
-//         // Save the product to the database
-//         await newProduct.save();
-        
-
-//         return res.status(200).json({
-//             success:true,
-//             message: 'Product created successfully', 
-//             product: newProduct });
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({ message: 'Error creating product', error: error.message });
-//     }
-// };
 
 exports.getAllProducts=async(req,res)=>{
     try {
@@ -208,7 +92,7 @@ exports.getAllProducts=async(req,res)=>{
         console.log(getProducts)
         console.log("hello")
 
-        return res.status(400).json({
+        return res.status(200).json({
             success:true,
             data:getProducts,
             message:'All products fetched successfully'
@@ -228,7 +112,7 @@ exports.deleteProductById=async(req,res)=>{
         const{id}=req.params
         const deleteProduct=await product.findByIdAndDelete({_id:id})
         console.log(deleteProduct)
-        return res.status(400).json({
+        return res.status(200).json({
             success:true,
             data:deleteProduct,
             message:'Product deleted successfully'
@@ -268,7 +152,9 @@ exports.updateProduct = async (req, res, next) => {
             ingredients,
             dietary,
             storage,
+            productIdPrefix,
             origin,
+            addedBy
         } = req.body;
 
         // Fetch the product by ID
@@ -312,7 +198,9 @@ exports.updateProduct = async (req, res, next) => {
         productInfo.ingredients = ingredients || productInfo.ingredients;
         productInfo.dietary = dietary || productInfo.dietary;
         productInfo.storage = storage || productInfo.storage;
+        productInfo.productIdPrefix=productIdPrefix || productInfo.productIdPrefix
         productInfo.origin = origin || productInfo.origin;
+        productInfo.addedBy = addedBy || productInfo.addedBy;
         productInfo.uploadImage = uploadImageUrl;
 
         // Save the updated product

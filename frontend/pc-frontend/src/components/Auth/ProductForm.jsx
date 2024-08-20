@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { productData, countries } from './Categories';
@@ -21,7 +20,7 @@ const ProductForm = () => {
     fat: '',
     saturatedFat: '',
     carbs: '',
-    fiber: '',
+    fibre: '',
     sugar: '',
     protein: '',
     salt: '',
@@ -34,6 +33,36 @@ const ProductForm = () => {
   const [productIdPrefix, setProductIdPrefix] = useState('');
   const location = useLocation();
   const data = location.state;
+
+  const selectedSuperCategory = productData.find(sc => sc._id === superCategory)?.name || '';
+  const selectedCategory = productData.find(sc => sc._id === superCategory)
+    ?.categories.find(cat => cat._id === category)?.name || '';
+  const selectedSubCategory = productData.find(sc => sc._id === superCategory)
+    ?.categories.find(cat => cat._id === category)
+    ?.subCategories.find(sub => sub._id === subCategory)?.name || '';
+  // Load saved form data when the component mounts
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem('savedProductForm'));
+    if (savedData) {
+      setProductName(savedData.productName);
+      setProductBrand(savedData.productBrand);
+      setSuperCategory(savedData.selectedSuperCategory);
+      setCategory(savedData.selectedCategory);
+      setSubCategory(savedData.selectedSubCategory);
+      setNoOfUnits(savedData.numberOfUnits);
+      setSiUnits(savedData.siUnits);
+      setUnitWeight(savedData.unitWeight);
+      setNetWeight(savedData.netWeight);
+      setGrossWeight(savedData.grossWeight);
+      setDescription(savedData.description);
+      setNutrition(savedData.nutrition);
+      setIngredients(savedData.ingredients);
+      setDietary(savedData.dietary);
+      setStorage(savedData.storage);
+      setOrigin(savedData.origin);
+      setFiles(savedData.files || []);
+    }
+  }, []);
 
   useEffect(() => {
     if (superCategory && category && subCategory) {
@@ -56,12 +85,32 @@ const ProductForm = () => {
     setNutrition({ ...nutrition, [name]: value });
   };
 
-  const selectedSuperCategory = productData.find(sc => sc._id === superCategory)?.name || '';
-  const selectedCategory = productData.find(sc => sc._id === superCategory)
-    ?.categories.find(cat => cat._id === category)?.name || '';
-  const selectedSubCategory = productData.find(sc => sc._id === superCategory)
-    ?.categories.find(cat => cat._id === category)
-    ?.subCategories.find(sub => sub._id === subCategory)?.name || '';
+  
+
+  const handleSave = () => {
+    // Save the form data in local storage
+    const formData = {
+      productName,
+      productBrand,
+      selectedSuperCategory,
+      selectedCategory,
+      selectedSubCategory,
+      noOfUnits,
+      siUnits,
+      unitWeight,
+      netWeight,
+      grossWeight,
+      description,
+      nutrition,
+      ingredients,
+      dietary,
+      storage,
+      origin,
+      files,
+    };
+    localStorage.setItem('savedProductForm', JSON.stringify(formData));
+    alert('Form saved! You can edit and submit later.');
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,7 +118,7 @@ const ProductForm = () => {
     const formData = new FormData();
     formData.append('productName', productName);
     formData.append('productBrand', productBrand);
-    formData.append('superCategory',selectedSuperCategory);
+    formData.append('superCategory', selectedSuperCategory);
     formData.append('category', selectedCategory);
     formData.append('subCategory', selectedSubCategory);
     formData.append('numberOfUnits', noOfUnits);
@@ -82,7 +131,7 @@ const ProductForm = () => {
     formData.append('fat', nutrition.fat);
     formData.append('saturatedFat', nutrition.saturatedFat);
     formData.append('carbs', nutrition.carbs);
-    formData.append('fibre', nutrition.fiber);
+    formData.append('fibre', nutrition.fibre);
     formData.append('sugar', nutrition.sugar);
     formData.append('protein', nutrition.protein);
     formData.append('salt', nutrition.salt);
@@ -90,22 +139,28 @@ const ProductForm = () => {
     formData.append('dietary', dietary);
     formData.append('storage', storage);
     formData.append('origin', origin);
-    
+    formData.append('productIdPrefix', productIdPrefix);
+    formData.append('addedBy', data.info.name);
     files.forEach((file) => {
       formData.append('uploadImage', file);
-      console.log(file.name)
     });
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/registerProduct', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/registerProduct',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
 
       console.log(response.data);
       if (response.status === 200) {
         alert('Product created successfully');
+        localStorage.removeItem('savedProductForm'); // Clear saved form data after submission
+        // Reset the form fields
         setProductName('');
         setProductBrand('');
         setSuperCategory('');
@@ -122,7 +177,7 @@ const ProductForm = () => {
           fat: '',
           saturatedFat: '',
           carbs: '',
-          fiber: '',
+          fibre: '',
           sugar: '',
           protein: '',
           salt: '',
@@ -155,7 +210,8 @@ const ProductForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
+      {/* Your form inputs remain the same */}
       <div>
         <label>Product Name</label>
         <input
@@ -318,13 +374,13 @@ const ProductForm = () => {
         />
       </div>
       <div>
-        <label>Fiber</label>
+        <label>Fibre</label>
         <input
           type="text"
-          name="fiber"
-          value={nutrition.fiber}
+          name="fibre"
+          value={nutrition.fibre}
           onChange={handleNutritionChange}
-          placeholder="Fiber"
+          placeholder="Fibre"
         />
       </div>
       <div>
@@ -420,13 +476,19 @@ const ProductForm = () => {
           onChange={handleFileChange}
         />
       </div>
-      <button>Save</button>
-      <button type="submit">Submit</button>
+      <button type="button" onClick={handleSave}>Save</button>
+      <button type="submit" onClick={handleSubmit}>Submit</button>
     </form>
   );
 };
 
 export default ProductForm;
+
+
+
+
+
+
 
 
 

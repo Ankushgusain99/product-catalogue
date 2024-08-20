@@ -89,10 +89,18 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    productIdPrefix:{
+        type:String,
+        required:true
+    },
     origin: [{
         type: String,
         required: true
     }],
+    addedBy: {
+        type: String, 
+        required:true
+    },
     uploadImage: {
         type: String, 
         required:true

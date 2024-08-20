@@ -5,6 +5,7 @@ import Users from './components/Auth/Users';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import ProductForm from './components/Auth/ProductForm';
+import ProductTable from './components/Auth/ProductTable';
 function App() {
   
   return (
@@ -15,6 +16,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/users" element={<Users />} />
         <Route path="/productForm" element={<ProductForm />} />
+        <Route path="/productTable" element={<ProductTable />} />
+
       </Routes>
     </Router>
     </>
