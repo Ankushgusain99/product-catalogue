@@ -95,6 +95,7 @@ const productSchema = new mongoose.Schema({
     }],
     uploadImage: {
         type: String, 
+        required:true
     }
 });
 
