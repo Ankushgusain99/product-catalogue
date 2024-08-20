@@ -7,7 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Initialize useNavigate
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -24,8 +23,17 @@ const Login = () => {
 
       if (response.status === 200) {
         alert('Login successful!');
-        console.log(response)
-        const role=response.data.user.role
+        const info={
+          id:response.data.user._id,
+          name:response.data.user.username
+        }
+        if (response.data.user.role === 'admin') {
+          navigate(`/register`,{state: {info}});
+        } else {
+          navigate("/productForm",{state: {info}});
+        }
+        
+      
         // Optionally store the token and user details (e.g., in localStorage)
        // localStorage.setItem('token', response.data.token);
         //localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -34,10 +42,8 @@ const Login = () => {
         setUsername('');
         setPassword('');
         setError('');
-        if (role==='admin')
-          navigate('/register')
-        else
-          navigate('/productForm')
+        
+        
         // Optionally redirect or perform another action
         // For example: window.location.href = '/dashboard';
       } else {
@@ -87,3 +93,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+

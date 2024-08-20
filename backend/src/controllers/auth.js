@@ -192,4 +192,31 @@ exports.deleteUser=async(req,res)=>{
     }
 }
 
+exports.getUserById=async(req,res)=>{
+    try {
+        const { id }=req.params
+        console.log(id)
+        const getUser=await User.findById({_id:id})
+        console.log(getUser)
+        getUser.password=undefined
+
+        if(!getUser){
+            return res.status(400).json({
+                success:false,
+                message:'User does not exist'
+            })
+        }
+        return res.status(200).json({
+            success:true,
+            data:getUser,
+            message:'User fetched successfully'
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:error.message
+        })
+    }
+}
+
 

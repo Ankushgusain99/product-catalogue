@@ -13,7 +13,7 @@ const userSchema=new mongoose.Schema({
     role:{
         type:String,
         enum:["admin","user"]
-    }
+    },
 })
 
 module.exports=mongoose.model("user",userSchema)

@@ -8,16 +8,17 @@ import ProductForm from './components/Auth/ProductForm';
 function App() {
   
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/users" element={<Users />} />
-          <Route path='/productForm' element={<ProductForm />} />
-        </Routes>
-      </div>
+    <>
+      <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/productForm" element={<ProductForm />} />
+      </Routes>
     </Router>
+    </>
+    
   );
 }
 
