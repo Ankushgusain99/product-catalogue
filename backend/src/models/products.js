@@ -102,7 +102,7 @@ const productSchema = new mongoose.Schema({
         required:true
     },
     uploadImage: {
-        type: String, 
+        type: [String], 
         required:true
     }
 });

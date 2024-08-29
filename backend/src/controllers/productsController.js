@@ -32,14 +32,24 @@ exports.registerProduct = async (req, res,next) => {
             addedBy
         } = req.body;
 
-        let uploadImageUrl = '';
+        let uploadImageUrls = [];
+        const uploadedImages = req.files.uploadImage; // For multiple file uploads
+
+        if (uploadedImages && uploadedImages.length > 0) {
+            for (let i = 0; i < uploadedImages.length; i++) {
+                const uploadResult = await cloudinary.uploader.upload(uploadedImages[i].tempFilePath);
+                uploadImageUrls.push(uploadResult.secure_url);  // Store each image URL
+            }
+        }
+        /*let uploadImageUrl = '';
         const uploaded = req.files.uploadImage; // Single file upload
         console.log(uploaded)
         if (uploaded) {
             const uploadResult = await cloudinary.uploader.upload(uploaded.tempFilePath);
             uploadImageUrl = uploadResult.secure_url;
         }
-        console.log(uploadImageUrl)
+        console.log(uploadImageUrl)*/
+        
         let netWeight = unitWeight * numberOfUnits;
 
         const newProduct = new product({
@@ -68,7 +78,7 @@ exports.registerProduct = async (req, res,next) => {
             productIdPrefix,
             origin,
             addedBy,
-            uploadImage: uploadImageUrl
+            uploadImage: uploadImageUrls 
         });
 
         await newProduct.save();

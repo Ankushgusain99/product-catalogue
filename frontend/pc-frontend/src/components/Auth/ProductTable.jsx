@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 const ProductTable = () => {
   const [products, setProducts] = useState([]); // State to hold the list of products
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [editingProductId, setEditingProductId] = useState(null); // State to track which product is being edited
   const [editableProduct, setEditableProduct] = useState({}); // State to hold the current editable product details
   const [selectedFile, setSelectedFile] = useState(null); // State to store selected file for upload
-
+  const navigate=useNavigate();
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -87,7 +87,13 @@ const handleSave = async () => {
   };
   
   return (
-    <table>
+    <>
+      <header>
+        <button onClick={() => navigate('/register')}>Register</button>
+        <button onClick={() => navigate('/users')}>Users</button>
+        <button onClick={() => navigate('/')}>Logout</button>
+      </header>
+      <table>
       <thead>
         <tr>
           <th>Product Id</th>
@@ -393,6 +399,8 @@ const handleSave = async () => {
         )}
       </tbody>
     </table>
+    </>
+    
   );
 };
 

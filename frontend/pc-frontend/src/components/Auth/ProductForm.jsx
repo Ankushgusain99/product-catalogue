@@ -1,48 +1,64 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { productData, countries } from './Categories';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Grid from "@mui/material/Grid";
+import { useLocation } from "react-router-dom";
+import MenuItem from "@mui/material/MenuItem";
+import { productData, countries } from "./Categories";
+import Select from "@mui/material/Select";
+import { Input, Typography } from "@mui/material";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+
+//import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+//import { useLocation } from 'react-router-dom';
 
 const ProductForm = () => {
-  const [productName, setProductName] = useState('');
-  const [productBrand, setProductBrand] = useState('');
-  const [superCategory, setSuperCategory] = useState('');
-  const [category, setCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
-  const [noOfUnits, setNoOfUnits] = useState('');
-  const [siUnits, setSiUnits] = useState('Kg');
-  const [unitWeight, setUnitWeight] = useState('');
-  const [netWeight, setNetWeight] = useState('0');
-  const [grossWeight, setGrossWeight] = useState('');
-  const [description, setDescription] = useState('');
+  const [productName, setProductName] = useState("");
+  const [productBrand, setProductBrand] = useState("");
+  const [superCategory, setSuperCategory] = useState("");
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [noOfUnits, setNoOfUnits] = useState("");
+  const [siUnits, setSiUnits] = useState("Kg");
+  const [unitWeight, setUnitWeight] = useState("");
+  const [netWeight, setNetWeight] = useState("0");
+  const [grossWeight, setGrossWeight] = useState("");
+  const [description, setDescription] = useState("");
   const [nutrition, setNutrition] = useState({
-    calories: '',
-    fat: '',
-    saturatedFat: '',
-    carbs: '',
-    fibre: '',
-    sugar: '',
-    protein: '',
-    salt: '',
+    calories: "",
+    fat: "",
+    saturatedFat: "",
+    carbs: "",
+    fibre: "",
+    sugar: "",
+    protein: "",
+    salt: "",
   });
-  const [ingredients, setIngredients] = useState('');
-  const [dietary, setDietary] = useState('');
-  const [storage, setStorage] = useState('');
-  const [origin, setOrigin] = useState('');
+  const [ingredients, setIngredients] = useState("");
+  const [dietary, setDietary] = useState("");
+  const [storage, setStorage] = useState("");
+  const [origin, setOrigin] = useState("");
   const [files, setFiles] = useState([]);
-  const [productIdPrefix, setProductIdPrefix] = useState('');
+  const [productIdPrefix, setProductIdPrefix] = useState("");
   const location = useLocation();
   const data = location.state;
-
-  const selectedSuperCategory = productData.find(sc => sc._id === superCategory)?.name || '';
-  const selectedCategory = productData.find(sc => sc._id === superCategory)
-    ?.categories.find(cat => cat._id === category)?.name || '';
-  const selectedSubCategory = productData.find(sc => sc._id === superCategory)
-    ?.categories.find(cat => cat._id === category)
-    ?.subCategories.find(sub => sub._id === subCategory)?.name || '';
+  const selectedSuperCategory =
+    productData.find((sc) => sc._id === superCategory)?.name || "";
+  const selectedCategory =
+    productData
+      .find((sc) => sc._id === superCategory)
+      ?.categories.find((cat) => cat._id === category)?.name || "";
+  const selectedSubCategory =
+    productData
+      .find((sc) => sc._id === superCategory)
+      ?.categories.find((cat) => cat._id === category)
+      ?.subCategories.find((sub) => sub._id === subCategory)?.name || "";
   // Load saved form data when the component mounts
   useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem('savedProductForm'));
+    const savedData = JSON.parse(localStorage.getItem("savedProductForm"));
     if (savedData) {
       setProductName(savedData.productName);
       setProductBrand(savedData.productBrand);
@@ -85,8 +101,6 @@ const ProductForm = () => {
     setNutrition({ ...nutrition, [name]: value });
   };
 
-  
-
   const handleSave = () => {
     // Save the form data in local storage
     const formData = {
@@ -108,399 +122,1286 @@ const ProductForm = () => {
       origin,
       files,
     };
-    localStorage.setItem('savedProductForm', JSON.stringify(formData));
-    alert('Form saved! You can edit and submit later.');
+    localStorage.setItem("savedProductForm", JSON.stringify(formData));
+    alert("Form saved! You can edit and submit later.");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('productName', productName);
-    formData.append('productBrand', productBrand);
-    formData.append('superCategory', selectedSuperCategory);
-    formData.append('category', selectedCategory);
-    formData.append('subCategory', selectedSubCategory);
-    formData.append('numberOfUnits', noOfUnits);
-    formData.append('siUnits', siUnits);
-    formData.append('unitWeight', unitWeight);
-    formData.append('netWeight', netWeight);
-    formData.append('grossWeight', grossWeight);
-    formData.append('productDescription', description);
-    formData.append('calories', nutrition.calories);
-    formData.append('fat', nutrition.fat);
-    formData.append('saturatedFat', nutrition.saturatedFat);
-    formData.append('carbs', nutrition.carbs);
-    formData.append('fibre', nutrition.fibre);
-    formData.append('sugar', nutrition.sugar);
-    formData.append('protein', nutrition.protein);
-    formData.append('salt', nutrition.salt);
-    formData.append('ingredients', ingredients);
-    formData.append('dietary', dietary);
-    formData.append('storage', storage);
-    formData.append('origin', origin);
-    formData.append('productIdPrefix', productIdPrefix);
-    formData.append('addedBy', data.info.name);
+    formData.append("productName", productName);
+    formData.append("productBrand", productBrand);
+    formData.append("superCategory", selectedSuperCategory);
+    formData.append("category", selectedCategory);
+    formData.append("subCategory", selectedSubCategory);
+    formData.append("numberOfUnits", noOfUnits);
+    formData.append("siUnits", siUnits);
+    formData.append("unitWeight", unitWeight);
+    formData.append("netWeight", netWeight);
+    formData.append("grossWeight", grossWeight);
+    formData.append("productDescription", description);
+    formData.append("calories", nutrition.calories);
+    formData.append("fat", nutrition.fat);
+    formData.append("saturatedFat", nutrition.saturatedFat);
+    formData.append("carbs", nutrition.carbs);
+    formData.append("fibre", nutrition.fibre);
+    formData.append("sugar", nutrition.sugar);
+    formData.append("protein", nutrition.protein);
+    formData.append("salt", nutrition.salt);
+    formData.append("ingredients", ingredients);
+    formData.append("dietary", dietary);
+    formData.append("storage", storage);
+    formData.append("origin", origin);
+    formData.append("productIdPrefix", productIdPrefix);
+    formData.append("addedBy", data.info.name);
     files.forEach((file) => {
-      formData.append('uploadImage', file);
+      formData.append("uploadImage", file);
     });
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/v1/registerProduct',
+        "http://localhost:8000/api/v1/registerProduct",
         formData,
         {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      console.log(response.data);
+
       if (response.status === 200) {
-        alert('Product created successfully');
-        localStorage.removeItem('savedProductForm'); // Clear saved form data after submission
+        console.log(response)
+        alert("Product created successfully");
+        localStorage.removeItem("savedProductForm"); // Clear saved form data after submission
         // Reset the form fields
-        setProductName('');
-        setProductBrand('');
-        setSuperCategory('');
-        setCategory('');
-        setSubCategory('');
-        setNoOfUnits('');
-        setSiUnits('Kg');
-        setUnitWeight('');
-        setNetWeight('0');
-        setGrossWeight('');
-        setDescription('');
+        setProductName("");
+        setProductBrand("");
+        setSuperCategory("");
+        setCategory("");
+        setSubCategory("");
+        setNoOfUnits("");
+        setSiUnits("");
+        setUnitWeight("");
+        setNetWeight("0");
+        setGrossWeight("");
+        setDescription("");
         setNutrition({
-          calories: '',
-          fat: '',
-          saturatedFat: '',
-          carbs: '',
-          fibre: '',
-          sugar: '',
-          protein: '',
-          salt: '',
+          calories: "",
+          fat: "",
+          saturatedFat: "",
+          carbs: "",
+          fibre: "",
+          sugar: "",
+          protein: "",
+          salt: "",
         });
-        setIngredients('');
-        setDietary('');
-        setStorage('');
-        setOrigin('');
-        setProductIdPrefix('');
+        setIngredients("");
+        setDietary("");
+        setStorage("");
+        setOrigin("");
+        setProductIdPrefix("");
         setFiles([]);
       } else {
-        alert('Failed to create product');
+        alert("Failed to create product");
       }
     } catch (error) {
-      console.error('Error creating product:', error);
-      alert('There was an error creating the product');
+      console.error("Error creating product:", error);
+      alert("There was an error creating the product");
     }
   };
 
   const getCategories = (superCategoryId) => {
-    const superCategoryData = productData.find((data) => data._id === superCategoryId);
+    const superCategoryData = productData.find(
+      (data) => data._id === superCategoryId
+    );
     return superCategoryData ? superCategoryData.categories : [];
   };
 
   const getSubCategories = (superCategoryId, categoryId) => {
-    const superCategoryData = productData.find((data) => data._id === superCategoryId);
+    const superCategoryData = productData.find(
+      (data) => data._id === superCategoryId
+    );
     if (!superCategoryData) return [];
-    const categoryData = superCategoryData.categories.find((cat) => cat._id === categoryId);
+    const categoryData = superCategoryData.categories.find(
+      (cat) => cat._id === categoryId
+    );
     return categoryData ? categoryData.subCategories : [];
   };
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   return (
-    <form>
-      {/* Your form inputs remain the same */}
-      <div>
-        <label>Product Name</label>
-        <input
-          type="text"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-          placeholder="Product Name"
-        />
-      </div>
-      <div>
-        <label>Product Brand</label>
-        <input
-          type="text"
-          value={productBrand}
-          onChange={(e) => setProductBrand(e.target.value)}
-          placeholder="Product Brand"
-        />
-      </div>
-      <div>
-        <label>Select Category</label>
-        <select
-          value={superCategory}
-          onChange={(e) => {
-            setSuperCategory(e.target.value);
-            setCategory(''); // Reset category and subcategory when supercategory changes
-            setSubCategory('');
+    <>
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
           }}
         >
-          <option value="">Select Super Category</option>
-          {productData.map((sc) => (
-            <option key={sc._id} value={sc._id}>
-              {sc.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            setSubCategory(''); // Reset subcategory when category changes
-          }}
-          disabled={!superCategory}
-        >
-          <option value="">Select Category</option>
-          {getCategories(superCategory).map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={subCategory}
-          onChange={(e) => setSubCategory(e.target.value)}
-          disabled={!category}
-        >
-          <option value="">Select Subcategory</option>
-          {getSubCategories(superCategory, category).map((sub) => (
-            <option key={sub._id} value={sub._id}>
-              {sub.name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>No of Units</label>
-        <input
-          type="text"
-          value={noOfUnits}
-          onChange={(e) => setNoOfUnits(e.target.value)}
-          placeholder="No. of units"
-        />
-      </div>
-      <div>
-        <label>Si Unit</label>
-        <select
-          value={siUnits}
-          onChange={(e) => setSiUnits(e.target.value)}
-        >
-          <option value="Kg">Kg</option>
-          <option value="g">g</option>
-          <option value="L">L</option>
-          <option value="mL">mL</option>
-        </select>
-      </div>
-      <div>
-        <label>Unit Weight</label>
-        <input
-          type="text"
-          value={unitWeight}
-          onChange={(e) => setUnitWeight(e.target.value)}
-          placeholder="Unit Weight"
-        />
-      </div>
-      <div>
-        <label>Net Weight</label>
-        <input
-          type="text"
-          value={netWeight}
-          readOnly
-          placeholder="Net Weight"
-        />
-      </div>
-      <div>
-        <label>Gross Weight</label>
-        <input
-          type="text"
-          value={grossWeight}
-          onChange={(e) => setGrossWeight(e.target.value)}
-          placeholder="Gross Weight"
-        />
-      </div>
-      <div>
-        <label>Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Description"
-        ></textarea>
-      </div>
-      <div>
-        <label>Calories</label>
-        <input
-          type="text"
-          name="calories"
-          value={nutrition.calories}
-          onChange={handleNutritionChange}
-          placeholder="Calories"
-        />
-      </div>
-      <div>
-        <label>Fat</label>
-        <input
-          type="text"
-          name="fat"
-          value={nutrition.fat}
-          onChange={handleNutritionChange}
-          placeholder="Fat"
-        />
-      </div>
-      <div>
-        <label>Saturated Fat</label>
-        <input
-          type="text"
-          name="saturatedFat"
-          value={nutrition.saturatedFat}
-          onChange={handleNutritionChange}
-          placeholder="Saturated Fat"
-        />
-      </div>
-      <div>
-        <label>Carbs</label>
-        <input
-          type="text"
-          name="carbs"
-          value={nutrition.carbs}
-          onChange={handleNutritionChange}
-          placeholder="Carbs"
-        />
-      </div>
-      <div>
-        <label>Fibre</label>
-        <input
-          type="text"
-          name="fibre"
-          value={nutrition.fibre}
-          onChange={handleNutritionChange}
-          placeholder="Fibre"
-        />
-      </div>
-      <div>
-        <label>Sugar</label>
-        <input
-          type="text"
-          name="sugar"
-          value={nutrition.sugar}
-          onChange={handleNutritionChange}
-          placeholder="Sugar"
-        />
-      </div>
-      <div>
-        <label>Protein</label>
-        <input
-          type="text"
-          name="protein"
-          value={nutrition.protein}
-          onChange={handleNutritionChange}
-          placeholder="Protein"
-        />
-      </div>
-      <div>
-        <label>Salt</label>
-        <input
-          type="text"
-          name="salt"
-          value={nutrition.salt}
-          onChange={handleNutritionChange}
-          placeholder="Salt"
-        />
-      </div>
-      <div>
-        <label>Ingredients</label>
-        <textarea
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-          placeholder="Ingredients"
-        ></textarea>
-      </div>
-      <div>
-        <label>Dietary</label>
-        <select value={dietary} onChange={(e) => setDietary(e.target.value)}>
-          <option value="">Select an option</option>
-          <option value="Vegan">Vegan</option>
-          <option value="Vegetarian">Vegetarian</option>
-          <option value="Lactose Free">Lactose Free</option>
-          <option value="Gluten Free">Gluten Free</option>
-          <option value="Gluten Free">Non-Vegetarian</option>
-        </select>
-      </div>
-      <div>
-        <label>Storage</label>
-        <input
-          type="text"
-          value={storage}
-          onChange={(e) => setStorage(e.target.value)}
-          placeholder="Storage"
-        />
-      </div>
-      <div>
-        <label>Origin</label>
-        <select value={origin} onChange={(e) => setOrigin(e.target.value)}>
-          <option value="">Select a Country</option>
+          <Typography variant="h6" color="white">
+            Product Name
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            
+          <Input type="text" disableUnderline value={productName} onChange={(e)=> setProductName(e.target.value)} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>
         
-          {countries.map((country, index) => (
-            <option key={index} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>Product ID Prefix</label>
-        <input type="text" value={productIdPrefix} readOnly />
-      </div>
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Product Brand
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="text" disableUnderline value={productBrand}
+          onChange={(e) => setProductBrand(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>
+      </Box>
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+          <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+              >
+                Super Category
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                disableUnderline
+                value={superCategory}
+                onChange={(e) => {
+                  setSuperCategory(e.target.value);
+                  setCategory(""); // Reset category and subcategory when supercategory changes
+                  setSubCategory("");
+                }}
+              >
+                {productData.map((sc) => (
+                  <MenuItem key={sc._id} value={sc._id}>
+                    {sc.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+        </Box>
+
+<Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+    
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+              >
+                Category
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                disableUnderline
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setSubCategory(""); // Reset subcategory when category changes
+                }}
+                disabled={!superCategory}
+              >
+                {getCategories(superCategory).map((cat) => (
+                  <MenuItem key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+        </Box>
+<Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+      
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+                variant="h1"
+              >
+                Sub Category
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                value={subCategory}
+                disableUnderline
+                onChange={(e) => setSubCategory(e.target.value)}
+                disabled={!category}
+              >
+                {getSubCategories(superCategory, category).map((sub) => (
+                  <MenuItem key={sub._id} value={sub._id}>
+                    {sub.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+        </Box>
+      </Box>
+      
+
+      <Box
+      
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          height={'81px'}
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled">
+              <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+                size="medium"
+              >
+                Select SI Unit
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                value={siUnits}
+                disableUnderline
+                onChange={(e) => setSiUnits(e.target.value)}
+              >
+                <MenuItem value={"Kilograms"}>Kilograms</MenuItem>
+                <MenuItem value={"Grams"}>Grams</MenuItem>
+                <MenuItem value={"Litres"}>Litres</MenuItem>
+                <MenuItem value={"Milli Litres"}>Milli Litres</MenuItem>
+                
+              </Select>
+            </FormControl>
+
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Number of Units
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input  type="number" disableUnderline value={noOfUnits}
+          onChange={(e) => setNoOfUnits(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Unit Weight
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline value={unitWeight}
+          onChange={(e) => setUnitWeight(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+      </Box>
+      
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Net Weight
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="text" disableUnderline value={netWeight}
+          onChange={(e) => setNetWeight(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+        
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Gross Weight
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline value={grossWeight}
+          onChange={(e) => setGrossWeight(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>
+      </Box>
+      
+      
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Description
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <textarea type="text" value={description}
+          onChange={(e) => setDescription(e.target.value)}
+           style={{backgroundColor:"black" ,color:'white',height:'100px',width:'100%',placeholder:'type here'}} />
+          
+          </Box>
+        </Box>
+        
+        
+      </Box>
 
       
-      <div>
-        <label>Added By</label>
-        <input
-          type="text"
-          value={data.info.name}
-          placeholder="Added By"
-          readOnly
-        />
-      </div>
-      <div>
-        <label>Upload Images</label>
-        <input
-          type="file"
-          multiple
-          onChange={handleFileChange}
-        />
-      </div>
-      <button type="button" onClick={handleSave}>Save</button>
-      <button type="submit" onClick={handleSubmit}>Submit</button>
-    </form>
+
+        <Grid
+          item
+          xs={12}
+          marginTop={'20px'}
+        >
+          <Typography
+            style={{ color: "white", fontSize: "25px" }}
+          >
+            <strong>Nutrition</strong>
+          </Typography>
+        </Grid>
+        
+        <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+
+<Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Calories
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="calories"
+          value={nutrition.calories}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>  
+      
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Fat
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="fat"
+          value={nutrition.fat}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Saturated Fat
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="saturatedFat"
+          value={nutrition.saturatedFat}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+      </Box>
+
+      
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+
+<Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Carbs
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="carbs"
+          value={nutrition.carbs}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>  
+      
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Fibre
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="fibre"
+          value={nutrition.fibre}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Sugar
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="sugar"
+          value={nutrition.sugar}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+      </Box>
+
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+
+<Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Protein
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input disableUnderline type="number" name="protein"
+          value={nutrition.protein}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>  
+      
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Salt
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="number" disableUnderline name="salt"
+          value={nutrition.salt}
+          onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+
+      </Box>
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Ingredients
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <textarea type="text" value={ingredients}
+          onChange={(e) => setIngredients(e.target.value)}
+ style={{backgroundColor:"black" ,color:'white',height:'100px',width:'100%',placeholder:'type here'}} />
+          
+          </Box>
+        </Box>
+        
+        
+      </Box>
+
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+          <Box
+          height={'81px'}
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled">
+              <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+              >
+                Select Dietary
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                value={dietary}
+                disableUnderline
+                onChange={(e) => setDietary(e.target.value)}
+              >
+                <MenuItem value={"Vegan"}>Vegan</MenuItem>
+                <MenuItem value={"Vegetarain"}>Vegetarian</MenuItem>
+                <MenuItem value={"Lactose Free"}>Lactose Free</MenuItem>
+                <MenuItem value={"Gluten Free"}>Gluten Free</MenuItem>
+                <MenuItem value={"Non Vegetarian"}>Non Vegetarian</MenuItem>
+              </Select>
+            </FormControl>
+
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Storage
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="text" disableUnderline value={storage}
+          onChange={(e) => setStorage(e.target.value)}
+          sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+<Box
+          height={'81px'}
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <FormControl variant="filled">
+               <InputLabel
+                id="demo-simple-select-filled-label"
+                style={{ color: "white" }}
+              >
+                Select a Country
+              </InputLabel> 
+              <Select
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                bgcolor="neutral.800"
+                borderColor="neutral.800"
+                style={{color:'white'}}
+                value={origin}
+                disableUnderline
+                onChange={(e) => setOrigin(e.target.value)}
+              >
+                <MenuItem value="Select a country">Select a Country</MenuItem>
+
+                {countries.map((country, index) => (
+                  <MenuItem key={index} value={country}>
+                    {country}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+        </Box>
+      </Box>
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        alignItems="flex-start"
+        width="100%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="100%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Product Id Prefix
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="text" disableUnderline value={productIdPrefix} readonly sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          
+          </Box>
+        </Box>
+        
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="50%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Typography variant="h6" color="white">
+            Added By
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            justifyContent="center"
+            mt={2}
+            width="100%"
+          >
+            <Input type="text" disableUnderline sx={{borderBottom:'2px solid gray',color:'white'}}/>
+          </Box>
+        </Box>
+      </Box>
+
+      <Box
+        display="flex"
+        flexWrap="wrap"
+        gap={2}
+        marginLeft={'300px'}
+        width="20%"
+        sx={{
+          maxWidth: { xs: '100%', md: 'auto' },
+          marginTop:'20px'
+        }}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          flex={1}
+          justifyContent="center"
+          px={4}
+          py={2}
+          borderRadius={1}
+          border="1px solid"
+          bgcolor="neutral.800"
+          borderColor="neutral.800"
+          width="20%"
+          sx={{
+            px: { xs: 2, md: 4 },
+            bgcolor: 'rgba(38,38,38,0.5)', // Equivalent to bg-opacity-50
+          }}
+        >
+          <Button
+            component="label"
+            variant="contained"
+            borderRadius={1}
+            border="1px solid"
+            bgcolor="neutral.800"
+            borderColor="neutral.800"
+            height='50px'
+            style={{
+              backgroundColor:"black",
+              color: "white",
+            }}
+          >
+            Upload 
+            <VisuallyHiddenInput type="file" multiple
+                onChange={handleFileChange}
+                name="uploadImage"
+                />
+          </Button>
+          
+        </Box>
+        
+        
+      </Box>
+
+
+        <Grid container marginTop={'20px'} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+          <Grid item sx={4}>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              style={{
+                backgroundColor: "black",
+                color: "white",
+                marginLeft: "285px",
+              }}
+            >
+              Save
+            </Button>
+          </Grid>
+          <Grid item sx={4}>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              style={{ backgroundColor: "black", color: "white" }}
+            >
+              Submit
+            </Button>
+          </Grid>
+        </Grid>
+    
+    </>
   );
 };
 
 export default ProductForm;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
