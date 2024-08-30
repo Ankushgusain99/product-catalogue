@@ -8,8 +8,9 @@ import { useLocation } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import { productData, countries } from "./Categories";
 import Select from "@mui/material/Select";
-import { Input, Typography } from "@mui/material";
+import { Input, Typography, IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from "@mui/material/styles";
 
 //import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -93,8 +94,15 @@ const ProductForm = () => {
   }, [noOfUnits, unitWeight]);
 
   const handleFileChange = (e) => {
-    setFiles([...e.target.files]);
+    // Append new files to the existing ones in the state
+    setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
   };
+
+  const handleRemoveFile = (index) => {
+    // Remove the file by index
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
 
   const handleNutritionChange = (e) => {
     const { name, value } = e.target;
@@ -853,7 +861,7 @@ const ProductForm = () => {
             width="100%"
           >
             <Input type="number" disableUnderline name="saturatedFat"
-          value={nutrition.saturatedFat}
+          value={nutrition.saturatedFat}   onChange={handleNutritionChange}
           sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
           </Box>
@@ -1316,7 +1324,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="text" disableUnderline sx={{borderBottom:'2px solid gray',color:'white'}}/>
+            <Input type="text" disableUnderline sx={{borderBottom:'2px solid gray',color:'white'}} value={data.info.name} readOnly/>
           </Box>
         </Box>
       </Box>
@@ -1373,6 +1381,42 @@ const ProductForm = () => {
         
         
       </Box>
+
+      <Box
+  display="flex"
+  flexWrap="wrap"
+  gap={2}
+  width="100%"
+  mt={2}
+>
+  {files.map((file, index) => (
+    <Box key={index} position="relative">
+      <img
+        src={URL.createObjectURL(file)} // Ensure that `file` is a valid File object here
+        alt={`Preview ${index}`}
+        style={{
+          width: '100px',
+          height: '100px',
+          objectFit: 'cover',
+          borderRadius: '8px',
+        }}
+        onLoad={() => URL.revokeObjectURL(file)} // Clean up the object URL after it's loaded
+      />
+      <IconButton
+        onClick={() => handleRemoveFile(index)}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          color: 'red',
+        }}
+      >
+        <DeleteIcon />
+      </IconButton>
+    </Box>
+  ))}
+</Box>
+
 
 
         <Grid container marginTop={'20px'} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
