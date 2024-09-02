@@ -1,13 +1,407 @@
+// import { useEffect, useState } from 'react';
+// import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
+
+// const ProductTable = () => {
+//   const [products, setProducts] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [editingProductId, setEditingProductId] = useState(null);
+//   const [editableProduct, setEditableProduct] = useState({});
+//   const [selectedFile, setSelectedFile] = useState(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchProducts = async () => {
+//       try {
+//         const response = await axios.get('http://localhost:8000/api/v1/getAllProducts');
+//         setProducts(response.data.data);
+//         setLoading(false);
+//       } catch (error) {
+//         console.error('Error fetching products:', error);
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchProducts();
+//   }, []);
+
+//   const handleDelete = async (productId) => {
+//     try {
+//       await axios.delete(`http://localhost:8000/api/v1/deleteProduct/${productId}`);
+//       setProducts(products.filter((product) => product._id !== productId));
+//       alert('Deleted successfully');
+//     } catch (error) {
+//       console.error('Error deleting product:', error);
+//     }
+//   };
+
+//   const handleEdit = (product) => {
+//     setEditingProductId(product._id);
+//     setEditableProduct({ ...product });
+//   };
+
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setEditableProduct({ ...editableProduct, [name]: value });
+//   };
+
+//   const handleFileChange = (e) => {
+//     setSelectedFile(e.target.files[0]);
+//   };
+
+//   const handleSave = async () => {
+//     try {
+//       const formData = new FormData();
+//       for (const key in editableProduct) {
+//         formData.append(key, editableProduct[key]);
+//       }
+//       if (selectedFile) {
+//         formData.append('file', selectedFile);
+//       }
+//       await axios.put(`http://localhost:8000/api/v1/updateProduct/${editingProductId}`, formData, {
+//         headers: {
+//           'Content-Type': 'multipart/form-data',
+//         },
+//       });
+//       setProducts(products.map((product) => (product._id === editingProductId ? editableProduct : product)));
+//       setEditingProductId(null);
+//       alert('Updated successfully');
+//     } catch (error) {
+//       console.error('Error updating product:', error);
+//       alert('Update failed');
+//     }
+//   };
+
+//   return (
+//     <>
+//       <header>
+//         <button onClick={() => navigate('/register')}>Register</button>
+//         <button onClick={() => navigate('/users')}>Users</button>
+//         <button onClick={() => navigate('/')}>Logout</button>
+//       </header>
+//       <table>
+//         <thead>
+//           <tr>
+//             <th>Product Id</th>
+//             <th>Product Name</th>
+//             <th>Product Brand</th>
+//             <th>Super Category</th>
+//             <th>Category</th>
+//             <th>Subcategory</th>
+//             <th>No. of units</th>
+//             <th>SI Units</th>
+//             <th>Unit Weight</th>
+//             <th>Net Weight</th>
+//             <th>Gross Weight</th>
+//             <th>Description</th>
+//             <th>Calories</th>
+//             <th>Fat</th>
+//             <th>Saturated Fat</th>
+//             <th>Carbs</th>
+//             <th>Fiber</th>
+//             <th>Sugar</th>
+//             <th>Protein</th>
+//             <th>Salt</th>
+//             <th>Ingredients</th>
+//             <th>Dietary</th>
+//             <th>Storage</th>
+//             <th>Origin</th>
+//             <th>Added By</th>
+//             <th>Product Id Prefix</th>
+//             <th>Images</th>
+//             <th>Actions</th>
+//           </tr>
+//         </thead>
+//         <tbody>
+//           {products.length === 0 ? (
+//             <tr>
+//               <td colSpan="23">No products found.</td>
+//             </tr>
+//           ) : (
+//             products.map((product) => (
+//               <tr key={product._id}>
+//                 {editingProductId === product._id ? (
+//                   <>
+//                     <td>{product._id}</td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="productName"
+//                         value={editableProduct.productName}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="productBrand"
+//                         value={editableProduct.productBrand}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="superCategory"
+//                         value={editableProduct.superCategory}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="category"
+//                         value={editableProduct.category}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="subCategory"
+//                         value={editableProduct.subCategory}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="numberOfUnits"
+//                         value={editableProduct.numberOfUnits}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="siUnits"
+//                         value={editableProduct.siUnits}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="unitWeight"
+//                         value={editableProduct.unitWeight}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="netWeight"
+//                         value={editableProduct.netWeight}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="grossWeight"
+//                         value={editableProduct.grossWeight}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="productDescription"
+//                         value={editableProduct.productDescription}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="calories"
+//                         value={editableProduct.calories}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="fat"
+//                         value={editableProduct.fat}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="saturatedFat"
+//                         value={editableProduct.saturatedFat}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="carbs"
+//                         value={editableProduct.carbs}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="fibre"
+//                         value={editableProduct.fibre}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="sugar"
+//                         value={editableProduct.sugar}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="protein"
+//                         value={editableProduct.protein}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="number"
+//                         name="salt"
+//                         value={editableProduct.salt}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="ingredients"
+//                         value={editableProduct.ingredients}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="dietary"
+//                         value={editableProduct.dietary}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="storage"
+//                         value={editableProduct.storage}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="origin"
+//                         value={editableProduct.origin}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>
+//                       <input
+//                         type="text"
+//                         name="addedBy"
+//                         value={editableProduct.addedBy}
+//                         onChange={handleInputChange}
+//                       />
+//                     </td>
+//                     <td>{product.productIdPrefix}</td>
+//                     <td>
+//                       {Array.isArray(editableProduct.uploadImage) && editableProduct.uploadImage.length > 0 ? (
+//                         editableProduct.uploadImage.map((image, index) => (
+//                           <a key={index} href={image} target="_blank" rel="noopener noreferrer">
+//                             View Image {index + 1}
+//                           </a>
+//                         ))
+//                       ) : (
+//                         'No Image'
+//                       )}
+//                     </td>
+//                     <td>
+//                       <input type="file" onChange={handleFileChange} />
+//                       <button onClick={handleSave}>Save</button>
+//                       <button onClick={() => setEditingProductId(null)}>Cancel</button>
+//                     </td>
+//                   </>
+//                 ) : (
+//                   <>
+//                     <td>{product._id}</td>
+//                     <td>{product.productName}</td>
+//                     <td>{product.productBrand}</td>
+//                     <td>{product.superCategory}</td>
+//                     <td>{product.category}</td>
+//                     <td>{product.subCategory}</td>
+//                     <td>{product.numberOfUnits}</td>
+//                     <td>{product.siUnits}</td>
+//                     <td>{product.unitWeight}</td>
+//                     <td>{product.netWeight}</td>
+//                     <td>{product.grossWeight}</td>
+//                     <td>{product.productDescription}</td>
+//                     <td>{product.calories}</td>
+//                     <td>{product.fat}</td>
+//                     <td>{product.saturatedFat}</td>
+//                     <td>{product.carbs}</td>
+//                     <td>{product.fibre}</td>
+//                     <td>{product.sugar}</td>
+//                     <td>{product.protein}</td>
+//                     <td>{product.salt}</td>
+//                     <td>{product.ingredients}</td>
+//                     <td>{product.dietary}</td>
+//                     <td>{product.storage}</td>
+//                     <td>{product.origin}</td>
+//                     <td>{product.addedBy}</td>
+//                     <td>{product.productIdPrefix}</td>
+//                     <td>
+//                       {Array.isArray(product.uploadImage) && product.uploadImage.length > 0 ? (
+//                         product.uploadImage.map((image, index) => (
+//                           <a key={index} href={image} target="_blank" rel="noopener noreferrer">
+//                             View Image {index + 1}
+//                           </a>
+//                         ))
+//                       ) : (
+//                         'No Image'
+//                       )}
+//                     </td>
+//                     <td>
+//                       <button onClick={() => handleEdit(product)}>Edit</button>
+//                       <button onClick={() => handleDelete(product._id)}>Delete</button>
+//                     </td>
+//                   </>
+//                 )}
+//               </tr>
+//             ))
+//           )}
+//         </tbody>
+//       </table>
+//     </>
+//   );
+// };
+
+// export default ProductTable;
+
+
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import LeftDrawer from './Drawer';
+
+
 const ProductTable = () => {
   const [products, setProducts] = useState([]); // State to hold the list of products
   const [loading, setLoading] = useState(true); // State to manage loading status
   const [editingProductId, setEditingProductId] = useState(null); // State to track which product is being edited
   const [editableProduct, setEditableProduct] = useState({}); // State to hold the current editable product details
   const [selectedFile, setSelectedFile] = useState(null); // State to store selected file for upload
-  const navigate=useNavigate();
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -23,6 +417,13 @@ const ProductTable = () => {
     fetchProducts(); // Call the function to fetch products
   }, []); // Empty dependency array ensures the effect runs only once on component mount
 
+  // const handleLogout = () => {
+  //   // Clear the token from localStorage
+  //   localStorage.removeItem('token');
+    
+  //   // Redirect to the login page
+  //   navigate('/');
+  // };
   // Handle delete functionality
   const handleDelete = async (productId) => {
     try {
@@ -51,10 +452,8 @@ const ProductTable = () => {
     setSelectedFile(e.target.files[0]); // Store the selected file
   };
 
-
   // Handle save functionality - Update the product in the backend
-  // Handle save functionality - Update the product in the backend
-const handleSave = async () => {
+  const handleSave = async () => {
     try {
       // Create FormData to handle product details and image
       const formData = new FormData();
@@ -85,338 +484,339 @@ const handleSave = async () => {
       alert('Update failed');
     }
   };
-  
+
+ // const navigate = useNavigate();
+
   return (
     <>
-      <header>
+      {/* <header>
         <button onClick={() => navigate('/register')}>Register</button>
         <button onClick={() => navigate('/users')}>Users</button>
-        <button onClick={() => navigate('/')}>Logout</button>
-      </header>
+        <button onClick={handleLogout}>Logout</button>
+      </header> */}
+     <LeftDrawer />
       <table>
-      <thead>
-        <tr>
-          <th>Product Id</th>
-          <th>Product Name</th>
-          <th>Product Brand</th>
-          <th>Super Category</th>
-          <th>Category</th>
-          <th>Subcategory</th>
-          <th>No. of units</th>
-          <th>SI Units</th>
-          <th>Unit Weight</th>
-          <th>Net Weight</th>
-          <th>Gross Weight</th>
-          <th>Description</th>
-          <th>Calories</th>
-          <th>Fat</th>
-          <th>Saturated Fat</th>
-          <th>Carbs</th>
-          <th>Fiber</th>
-          <th>Sugar</th>
-          <th>Protein</th>
-          <th>Salt</th>
-          <th>Ingredients</th>
-          <th>Dietary</th>
-          <th>Storage</th>
-          <th>Origin</th>
-          <th>Added By</th>
-          <th>Product Id Prefix</th>
-          <th>Image</th>
-          <th>Actions</th> {/* Column for Edit/Delete actions */}
-        </tr>
-      </thead>
-      <tbody>
-        {products.length === 0 ? (
+        <thead>
           <tr>
-            <td colSpan="7">No products found.</td> 
+            <th>Product Id</th>
+            <th>Product Name</th>
+            <th>Product Brand</th>
+            <th>Super Category</th>
+            <th>Category</th>
+            <th>Subcategory</th>
+            <th>No. of units</th>
+            <th>SI Units</th>
+            <th>Unit Weight</th>
+            <th>Net Weight</th>
+            <th>Gross Weight</th>
+            <th>Description</th>
+            <th>Calories</th>
+            <th>Fat</th>
+            <th>Saturated Fat</th>
+            <th>Carbs</th>
+            <th>Fibre</th>
+            <th>Sugar</th>
+            <th>Protein</th>
+            <th>Salt</th>
+            <th>Ingredients</th>
+            <th>Dietary</th>
+            <th>Storage</th>
+            <th>Origin</th>
+            <th>Added By</th>
+            <th>Product Id Prefix</th>
+            <th>Image</th>
+            <th>Actions</th> {/* Column for Edit/Delete actions */}
           </tr>
-        ) : (
-          products.map((product) => (
-            <tr key={product._id}>
-              {editingProductId === product._id ? (
-                <>
-                  
-                  <td>{product._id}</td>
-                  <td>
-                    <input
-                      type="text"
-                      name="productName"
-                      value={editableProduct.productName}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="productBrand"
-                      value={editableProduct.productBrand}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="superCategory"
-                      value={editableProduct.superCategory}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="category"
-                      value={editableProduct.category}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="text"
-                      name="subCategory"
-                      value={editableProduct.subCategory}
-                      onChange={handleInputChange}
-                    />
-                  </td>
-                  <td>
-    <input
-      type="number"
-      name="numberOfUnits"
-      value={editableProduct.numberOfUnits}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="siUnits"
-      value={editableProduct.siUnits}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="unitWeight"
-      value={editableProduct.unitWeight}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="netWeight"
-      value={editableProduct.netWeight}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="grossWeight"
-      value={editableProduct.grossWeight}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="productDescription"
-      value={editableProduct.productDescription}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="calories"
-      value={editableProduct.calories}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="fat"
-      value={editableProduct.fat}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="saturatedFat"
-      value={editableProduct.saturatedFat}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="carbs"
-      value={editableProduct.carbs}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="fibre"
-      value={editableProduct.fibre}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="sugar"
-      value={editableProduct.sugar}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="protein"
-      value={editableProduct.protein}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="number"
-      name="salt"
-      value={editableProduct.salt}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="ingredients"
-      value={editableProduct.ingredients}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="dietary"
-      value={editableProduct.dietary}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="storage"
-      value={editableProduct.storage}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="origin"
-      value={editableProduct.origin}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="addedBy"
-      value={editableProduct.addedBy}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-    <input
-      type="text"
-      name="productIdPrefix"
-      value={editableProduct.productIdPrefix}
-      onChange={handleInputChange}
-    />
-  </td>
-  <td>
-  {/* File input for selecting the image */}
-  <input type="file" onChange={handleFileChange} /> 
-
-  {/* Link to view the current uploaded image, if available */}
-  {editableProduct.uploadImage && (
-    <a href={editableProduct.uploadImage} target="_blank" rel="noopener noreferrer">
-      View Image
-    </a>
-  )}
-</td>
-
-                  <td>
-                    <button onClick={handleSave}>Save</button> {/* Button to save the changes */}
-                  </td>
-                </>
-              ) : (
-                <>
-                  {/* Render static product details if not in edit mode */}
-                  <td>{product._id}</td>
-                  <td>{product.productName}</td>
-                  <td>{product.productBrand}</td>
-                  <td>{product.superCategory}</td>
-                  <td>{product.category}</td>
-                  <td>{product.subCategory}</td>
-                  <td>{product.numberOfUnits}</td>
-                  <td>{product.siUnits}</td>
-                  <td>{product.unitWeight}</td>
-                  <td>{product.netWeight}</td>
-                  <td>{product.grossWeight}</td>
-              <td>{product.productDescription}</td>
-                   <td>{product.calories}</td>
-              <td>{product.fat}</td>
-              <td>{product.saturatedFat}</td>
-              <td>{product.carbs}</td>
-              <td>{product.fibre}</td>
-              <td>{product.sugar}</td>
-              <td>{product.protein}</td>
-              <td>{product.salt}</td>
-              <td>{product.ingredients}</td>
-              <td>{product.dietary}</td>
-              <td>{product.storage}</td>
-              <td>{product.origin}</td>
-              <td>{product.addedBy}</td>
-              <td>{product.productIdPrefix}</td>
-                  <td>
-                    <a href={product.uploadImage} target="_blank" rel="noopener noreferrer">
-                      View Image
-                    </a> {/* Link to view the product image */}
-                  </td>
-                  <td>
-                    <button onClick={() => handleEdit(product)}>Edit</button> {/* Button to enter edit mode */}
-                    <button onClick={() => handleDelete(product._id)}>Delete</button> {/* Button to delete the product */}
-                  </td>
-                </>
-              )}
+        </thead>
+        <tbody>
+          {loading ? (
+            <tr>
+              <td colSpan="7">Loading...</td> 
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          ) : products.length === 0 ? (
+            <tr>
+              <td colSpan="7">No products found.</td> 
+            </tr>
+          ) : (
+            products.map((product, index) => (
+            
+              <tr key={product._id}>
+                <td>{String(index + 1).padStart(6, '0')}</td> {/* Sequential number with leading zeros */}
+                {editingProductId === product._id ? (
+                  <>
+                    {/* Render inputs for editing */}
+                    <td>{product._id}</td>
+                    <td>
+                      <input
+                        type="text"
+                        name="productName"
+                        value={editableProduct.productName || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="productBrand"
+                        value={editableProduct.productBrand || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="superCategory"
+                        value={editableProduct.superCategory || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="category"
+                        value={editableProduct.category || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="subCategory"
+                        value={editableProduct.subCategory || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="numberOfUnits"
+                        value={editableProduct.numberOfUnits || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="siUnits"
+                        value={editableProduct.siUnits || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="unitWeight"
+                        value={editableProduct.unitWeight || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="netWeight"
+                        value={editableProduct.netWeight || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="grossWeight"
+                        value={editableProduct.grossWeight || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="productDescription"
+                        value={editableProduct.productDescription || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="calories"
+                        value={editableProduct.calories || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="fat"
+                        value={editableProduct.fat || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="saturatedFat"
+                        value={editableProduct.saturatedFat || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="carbs"
+                        value={editableProduct.carbs || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="fiber"
+                        value={editableProduct.fiber || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="sugar"
+                        value={editableProduct.sugar || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="protein"
+                        value={editableProduct.protein || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        name="salt"
+                        value={editableProduct.salt || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="ingredients"
+                        value={editableProduct.ingredients || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="dietary"
+                        value={editableProduct.dietary || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="storage"
+                        value={editableProduct.storage || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="origin"
+                        value={editableProduct.origin || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="addedBy"
+                        value={editableProduct.addedBy || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        name="productIdPrefix"
+                        value={editableProduct.productIdPrefix || ''}
+                        onChange={handleInputChange}
+                      />
+                    </td>
+                    <td>
+                      {editableProduct.uploadImage && (
+                        <img
+                          src={`http://localhost:8000/${editableProduct.uploadImage}`}
+                          alt="Product"
+                          style={{ width: '100px', height: '100px' }}
+                        />
+                      )}
+                      <input
+                        type="file"
+                        name="uploadImage"
+                        onChange={handleFileChange}
+                      />
+                    </td>
+                    <td>
+                      <button onClick={handleSave}>Save</button>
+                      <button onClick={() => setEditingProductId(null)}>Cancel</button>
+                    </td>
+                  </>
+                ) : (
+                  <>
+                    {/* <td>{product._id}</td> */}
+                    <td>{product.productName}</td>
+                    <td>{product.productBrand}</td>
+                    <td>{product.superCategory}</td>
+                    <td>{product.category}</td>
+                    <td>{product.subCategory}</td>
+                    <td>{product.numberOfUnits}</td>
+                    <td>{product.siUnits}</td>
+                    <td>{product.unitWeight}</td>
+                    <td>{product.netWeight}</td>
+                    <td>{product.grossWeight}</td>
+                    <td>{product.productDescription}</td>
+                    <td>{product.calories}</td>
+                    <td>{product.fat}</td>
+                    <td>{product.saturatedFat}</td>
+                    <td>{product.carbs}</td>
+                    <td>{product.fibre}</td>
+                    <td>{product.sugar}</td>
+                    <td>{product.protein}</td>
+                    <td>{product.salt}</td>
+                    <td>{product.ingredients}</td>
+                    <td>{product.dietary}</td>
+                    <td>{product.storage}</td>
+                    <td>{product.origin}</td>
+                    <td>{product.addedBy}</td>
+                    <td>{product.productIdPrefix}</td>
+                    <td>
+                       {Array.isArray(product.uploadImage) && product.uploadImage.length > 0 ? (
+                         product.uploadImage.map((image, index) => (
+                           <a key={index} href={image} target="_blank" rel="noopener noreferrer">
+                             View Image {index + 1}
+                           </a>
+                         ))
+                       ) : (
+                        'No Image'
+                      )}
+                   </td>
+                    <td>
+                      <button onClick={() => handleEdit(product)}>Edit</button>
+                      <button onClick={() => handleDelete(product._id)}>Delete</button>
+                    </td>
+                  </>
+                )}
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </>
-    
   );
 };
 
 export default ProductTable;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

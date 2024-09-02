@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertTitle,Input, Typography,IconButton} from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+//import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import Box from "@mui/material/Box";
 
@@ -13,9 +13,9 @@ const Login = () => {
   const [success, setSuccess] = useState(''); // State for success alert
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword); // Toggle visibility state
-  };
+  // const togglePasswordVisibility = () => {
+  //   setShowPassword(!showPassword); // Toggle visibility state
+  // };
   const navigate = useNavigate(); // Initialize useNavigate
   
   const handleSubmit = async (event) => {
@@ -31,6 +31,8 @@ const Login = () => {
           },
         }
       );
+      const { token } = response.data;
+      localStorage.setItem('token',token)
   
       if (response.status === 200) {
         setSuccess('Login successful!'); // Show success message
@@ -175,9 +177,9 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             sx={{ borderBottom: '2px solid gray', color: 'white', flex: 1 }}
           />
-          <IconButton style={{backgroundColor:'white'}} onClick={togglePasswordVisibility} sx={{ marginLeft: '10px' }}>
+          {/* <IconButton style={{backgroundColor:'white'}} onClick={togglePasswordVisibility} sx={{ marginLeft: '10px' }}>
             {showPassword ? <VisibilityOff /> : <Visibility />}
-          </IconButton>
+          </IconButton> */}
         </Box>
       </Box>
     </Box>

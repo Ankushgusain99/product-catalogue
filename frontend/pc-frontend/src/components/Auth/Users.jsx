@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import LeftDrawer from './Drawer';
 
 
 const UsersList = () => {
@@ -135,7 +136,9 @@ const UsersList = () => {
   };
 
   return (
-    <div>
+    <>
+      <LeftDrawer />
+      <div>
       <h1>Users List</h1>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
@@ -216,6 +219,8 @@ const UsersList = () => {
         </div>
       )}
     </div>
+    </>
+    
   );
 };
 

@@ -108,6 +108,8 @@ exports.loginUser=async(req,res)=>{
     }
 }
 
+
+
 exports.getAllUsers=async(req,res)=>{
     try {
         const user=await User.find({})

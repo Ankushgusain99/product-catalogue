@@ -30,15 +30,15 @@ const productSchema = new mongoose.Schema({
         required:true
     },
     unitWeight: {
-        type: Number,
+        type: String,
         required: true
     },
     netWeight: {
-        type: Number,
+        type: String,
         //required: true
     },
     grossWeight: {
-        type: Number,
+        type: String,
         required: true
     },
     productDescription: {
@@ -46,35 +46,35 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     calories: {
-        type: Number,
+        type: String,
         required: true
     },
     fat: {
-        type: Number,
+        type: String,
         required: true
     },
     saturatedFat: {
-        type: Number,
+        type: String,
         required: true
     },
     carbs: {
-        type: Number,
+        type: String,
         required: true
     },
     fibre: {
-        type: Number,
+        type: String,
         required: true
     },
     sugar: {
-        type: Number,
+        type: String,
         required: true
     },
     protein: {
-        type: Number,
+        type: String,
         required: true
     },
     salt: {
-        type: Number,
+        type: String,
         required: true
     },
     ingredients: {

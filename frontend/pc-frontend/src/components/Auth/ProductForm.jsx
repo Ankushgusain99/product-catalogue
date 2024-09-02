@@ -10,7 +10,7 @@ import { productData, countries } from "./Categories";
 import Select from "@mui/material/Select";
 import { Input, Typography, IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
-import DeleteIcon from '@mui/icons-material/Delete';
+//import DeleteIcon from '@mui/icons-material/Delete';
 import { styled } from "@mui/material/styles";
 
 //import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -44,6 +44,7 @@ const ProductForm = () => {
   const [origin, setOrigin] = useState("");
   const [files, setFiles] = useState([]);
   const [productIdPrefix, setProductIdPrefix] = useState("");
+  const [isSaved, setIsSaved] = useState(false);
   const location = useLocation();
   const data = location.state;
   const selectedSuperCategory =
@@ -98,10 +99,10 @@ const ProductForm = () => {
     setFiles((prevFiles) => [...prevFiles, ...Array.from(e.target.files)]);
   };
 
-  const handleRemoveFile = (index) => {
-    // Remove the file by index
-    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
-  };
+  // const handleRemoveFile = (index) => {
+  //   // Remove the file by index
+  //   setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  // };
 
 
   const handleNutritionChange = (e) => {
@@ -132,9 +133,11 @@ const ProductForm = () => {
     };
     localStorage.setItem("savedProductForm", JSON.stringify(formData));
     alert("Form saved! You can edit and submit later.");
+    setIsSaved(true); // Enable the Submit button after saving the form data
   };
 
   const handleSubmit = async (e) => {
+    if (!isSaved) return; // Ensure the form is saved before submitting
     e.preventDefault();
 
     const formData = new FormData();
@@ -211,11 +214,125 @@ const ProductForm = () => {
         setOrigin("");
         setProductIdPrefix("");
         setFiles([]);
+        setIsSaved(true); // Enable the Submit button
       } else {
         alert("Failed to create product");
       }
     } catch (error) {
-      console.error("Error creating product:", error);
+      
+  const handleSave = () => {
+    // Save the form data in local storage
+    const formData = {
+      productName,
+      productBrand,
+      selectedSuperCategory,
+      selectedCategory,
+      selectedSubCategory,
+      noOfUnits,
+      siUnits,
+      unitWeight,
+      netWeight,
+      grossWeight,
+      description,
+      nutrition,
+      ingredients,
+      dietary,
+      storage,
+      origin,
+      files,
+    };
+    localStorage.setItem("savedProductForm", JSON.stringify(formData));
+    alert("Form saved! You can edit and submit later.");
+    setIsSaved(true); // Enable the Submit button after saving the form data
+  };
+
+  const handleSubmit = async (e) => {
+    if (!isSaved) return; // Ensure the form is saved before submitting
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("productName", productName);
+    formData.append("productBrand", productBrand);
+    formData.append("superCategory", selectedSuperCategory);
+    formData.append("category", selectedCategory);
+    formData.append("subCategory", selectedSubCategory);
+    formData.append("numberOfUnits", noOfUnits);
+    formData.append("siUnits", siUnits);
+    formData.append("unitWeight", unitWeight);
+    formData.append("netWeight", netWeight);
+    formData.append("grossWeight", grossWeight);
+    formData.append("productDescription", description);
+    formData.append("calories", nutrition.calories);
+    formData.append("fat", nutrition.fat);
+    formData.append("saturatedFat", nutrition.saturatedFat);
+    formData.append("carbs", nutrition.carbs);
+    formData.append("fibre", nutrition.fibre);
+    formData.append("sugar", nutrition.sugar);
+    formData.append("protein", nutrition.protein);
+    formData.append("salt", nutrition.salt);
+    formData.append("ingredients", ingredients);
+    formData.append("dietary", dietary);
+    formData.append("storage", storage);
+    formData.append("origin", origin);
+    formData.append("productIdPrefix", productIdPrefix);
+    formData.append("addedBy", data.info.name);
+    files.forEach((file) => {
+      formData.append("uploadImage", file);
+    });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/v1/registerProduct",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+
+      if (response.status === 200) {
+        console.log(response)
+        alert("Product created successfully");
+        localStorage.removeItem("savedProductForm"); // Clear saved form data after submission
+        // Reset the form fields
+        setProductName("");
+        setProductBrand("");
+        setSuperCategory("");
+        setCategory("");
+        setSubCategory("");
+        setNoOfUnits("");
+        setSiUnits("");
+        setUnitWeight("");
+        setNetWeight("0");
+        setGrossWeight("");
+        setDescription("");
+        setNutrition({
+          calories: "",
+          fat: "",
+          saturatedFat: "",
+          carbs: "",
+          fibre: "",
+          sugar: "",
+          protein: "",
+          salt: "",
+        });
+        setIngredients("");
+        setDietary("");
+        setStorage("");
+        setOrigin("");
+        setProductIdPrefix("");
+        setFiles([]);
+        setIsSaved(true); // Enable the Submit button
+      } else {
+        alert("Failed to create product");
+      }
+    } catch (error) {
+      console.log("Error creating product:", error);
+      alert("There was an error creating the product");
+    }
+  };
       alert("There was an error creating the product");
     }
   };
@@ -601,7 +718,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline value={unitWeight}
+            <Input type="text"  disableUnderline value={unitWeight}
           onChange={(e) => setUnitWeight(e.target.value)}
           sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -683,7 +800,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline value={grossWeight}
+            <Input type="text" disableUnderline value={grossWeight}
           onChange={(e) => setGrossWeight(e.target.value)}
           sx={{borderBottom:'2px solid gray',color:'white'}}/>
           </Box>
@@ -792,7 +909,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="calories"
+            <Input type="text" disableUnderline name="calories"
           value={nutrition.calories}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           </Box>
@@ -826,7 +943,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="fat"
+            <Input type="text" disableUnderline name="fat"
           value={nutrition.fat}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -860,7 +977,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="saturatedFat"
+            <Input type="text" disableUnderline name="saturatedFat"
           value={nutrition.saturatedFat}   onChange={handleNutritionChange}
           sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -909,7 +1026,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="carbs"
+            <Input type="text" disableUnderline name="carbs"
           value={nutrition.carbs}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           </Box>
@@ -943,7 +1060,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="fibre"
+            <Input type="text" disableUnderline name="fibre"
           value={nutrition.fibre}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -977,7 +1094,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="sugar"
+            <Input type="text"  disableUnderline name="sugar"
           value={nutrition.sugar}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -1026,7 +1143,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input disableUnderline type="number" name="protein"
+            <Input disableUnderline type="text" name="protein"
           value={nutrition.protein}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           </Box>
@@ -1060,7 +1177,7 @@ const ProductForm = () => {
             mt={2}
             width="100%"
           >
-            <Input type="number" disableUnderline name="salt"
+            <Input type="text"  disableUnderline name="salt"
           value={nutrition.salt}
           onChange={handleNutritionChange} sx={{borderBottom:'2px solid gray',color:'white'}}/>
           
@@ -1382,67 +1499,75 @@ const ProductForm = () => {
         
       </Box>
 
-      <Box
+      {/* <Box
   display="flex"
   flexWrap="wrap"
   gap={2}
   width="100%"
   mt={2}
 >
-  {files.map((file, index) => (
+  {files && files.length > 0 && files.map((file, index) => (
     <Box key={index} position="relative">
-      <img
-        src={URL.createObjectURL(file)} // Ensure that `file` is a valid File object here
-        alt={`Preview ${index}`}
-        style={{
-          width: '100px',
-          height: '100px',
-          objectFit: 'cover',
-          borderRadius: '8px',
-        }}
-        onLoad={() => URL.revokeObjectURL(file)} // Clean up the object URL after it's loaded
-      />
-      <IconButton
-        onClick={() => handleRemoveFile(index)}
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          color: 'red',
-        }}
-      >
-        <DeleteIcon />
-      </IconButton>
+      {file instanceof File ? ( // Check if file is a valid File object
+        <>
+          <img
+            src={URL.createObjectURL(file)} 
+            alt={`Preview ${index}`}
+            style={{
+              width: '100px',
+              height: '100px',
+              objectFit: 'cover',
+              borderRadius: '8px',
+            }}
+            onLoad={() => URL.revokeObjectURL(file)} // Clean up the object URL after it's loaded
+          />
+          <IconButton
+            onClick={() => handleRemoveFile(index)}
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              color: 'red',
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </>
+      ) : (
+        <p></p>
+      )}
     </Box>
   ))}
-</Box>
+</Box> */}
 
 
 
-        <Grid container marginTop={'20px'} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item sx={4}>
-            <Button
-              variant="contained"
-              onClick={handleSave}
-              style={{
-                backgroundColor: "black",
-                color: "white",
-                marginLeft: "285px",
-              }}
-            >
-              Save
-            </Button>
-          </Grid>
-          <Grid item sx={4}>
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              style={{ backgroundColor: "black", color: "white" }}
-            >
-              Submit
-            </Button>
-          </Grid>
-        </Grid>
+
+<Grid container marginTop={'20px'} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid item sx={4}>
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          style={{
+            backgroundColor: "black",
+            color: "white",
+            marginLeft: "285px",
+          }}
+        >
+          Save
+        </Button>
+      </Grid>
+      <Grid item sx={4}>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          style={{ backgroundColor: "black", color: "white" }}
+          disabled={!isSaved} // Disable until the form is saved
+        >
+          Submit
+        </Button>
+      </Grid>
+    </Grid>
     
     </>
   );
